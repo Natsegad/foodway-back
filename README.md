@@ -4,6 +4,7 @@
     - Gorm
     - Postgresql
     - Logrus
+    - Jwt
 - Docker
 
 # Run

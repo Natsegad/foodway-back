@@ -3,6 +3,7 @@
     - Gin
     - Gorm
     - Postgresql
+    - Logrus
 - Docker
 
 # Run

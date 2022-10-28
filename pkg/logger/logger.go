@@ -61,7 +61,7 @@ func init() {
 		panic(err)
 	}
 
-	allFile, err := os.OpenFile("log.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0640)
+	allFile, err := os.OpenFile("logs/log.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0640)
 	if err != nil {
 		panic(err)
 	}

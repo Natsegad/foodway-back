@@ -3,6 +3,11 @@ package domain
 type Config struct {
 	Port string
 	IP   string
+
+	DbName     string
+	DbPassword string
+	DbUser     string
+	DbPort     string
 }
 
 type UserInfo struct {

@@ -2,7 +2,7 @@ package service
 
 import "foodway/internal/domain"
 
-// Валидация
+// Валидация. Проверка данных соответствию стандартов
 func validation(user domain.UserInfo) {
 
 }

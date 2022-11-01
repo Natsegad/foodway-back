@@ -3,17 +3,28 @@ package db
 import (
 	"fmt"
 	"foodway/internal/cfg"
+	"foodway/pkg/jwt"
+	"github.com/google/uuid"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 type UserInfo struct {
-	Id           uint64 `json:"id" gorm:"primaryKey"`
-	Email        string `json:"email"`
-	Pass         string `json:"password"`
+	Id           uint32 `json:"id" gorm:"primaryKey"`
+	Phone        string `json:"phone"`
 	Token        string `json:"jwt"`
 	RefreshToken string `json:"refresh_jwt"`
+}
+
+func NewUserInfo(phone string) UserInfo {
+	user := UserInfo{}
+	user.Phone = phone
+	user.RefreshToken = ""
+	user.Id = uuid.New().ID()
+	user.Token = jwt.GenerateJwtById(user.Id)
+
+	return user
 }
 
 var DataBase *gorm.DB
@@ -30,22 +41,25 @@ func InitDb() {
 	DataBase = db
 }
 
-func AutoMigrate() {
+func AutoMigrate() error {
 	err := DataBase.AutoMigrate(&UserInfo{})
 	if err != nil {
 		fmt.Printf("Error migrate DB %s \n", err.Error())
-		return
+		return err
 	}
+
+	return nil
 }
 
-func AddUser(user UserInfo) {
+func AddUser(user UserInfo) error {
 	ok := DataBase.Create(&user)
 	if ok.Error != nil {
 		fmt.Printf("Error AddUser %s \n", ok.Error.Error())
-		return
+		return ok.Error
 	}
 
-	fmt.Printf("User added to database %s \n", user.Email)
+	fmt.Printf("User added to database %s \n", user.Phone)
+	return nil
 }
 
 func DeleteUser(id uint64) error {
@@ -83,7 +97,7 @@ func GetAllUsers() ([]UserInfo, error) {
 	return users, nil
 }
 
-func GetUserByEmail(email string) UserInfo {
+func GetUserByPhone(phone string) UserInfo {
 	ret := UserInfo{}
 	users, err := GetAllUsers()
 	if err != nil {
@@ -92,7 +106,7 @@ func GetUserByEmail(email string) UserInfo {
 	}
 
 	for _, v := range users {
-		if v.Email == email {
+		if v.Phone == phone {
 			return v
 		}
 	}
@@ -108,8 +122,7 @@ func UpdateUser(user UserInfo) error {
 		return ok.Error
 	}
 
-	userBase.Email = user.Email
-	userBase.Pass = user.Pass
+	userBase.Phone = user.Phone
 	userBase.Token = user.Token
 
 	DataBase.Save(&userBase)

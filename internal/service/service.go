@@ -2,6 +2,7 @@ package service
 
 import (
 	"foodway/internal/domain"
+	"foodway/pkg/db"
 	"foodway/pkg/logger"
 )
 
@@ -20,7 +21,7 @@ func validation(user domain.UserInfoPhone) error {
 
 // Добавление в бд
 func addUserToDB(user domain.UserInfoPhone) error {
-	return nil
+	return db.AddUser(db.NewUserInfo(user.Phone))
 }
 
 // Главная функция регистрации

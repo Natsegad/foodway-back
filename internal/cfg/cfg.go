@@ -33,8 +33,33 @@ func InitCfg() {
 		log.Errorf("Error get ID")
 	}
 
+	dbName, exst := os.LookupEnv("DBNAME")
+	if !exst {
+		log.Errorf("Error get DbName")
+	}
+
+	dbPassword, exst := os.LookupEnv("DBPASSWORD")
+	if !exst {
+		log.Errorf("Error get DBPASSWORD")
+	}
+
+	dbPort, exst := os.LookupEnv("DBPORT")
+	if !exst {
+		log.Errorf("Error get DBPORT")
+	}
+
+	dbUser, exst := os.LookupEnv("DBUSER")
+	if !exst {
+		log.Errorf("Error get DBUSER")
+	}
+
 	Cfg = domain.Config{
 		Port: port,
 		IP:   id,
+
+		DbName:     dbName,
+		DbPassword: dbPassword,
+		DbPort:     dbPort,
+		DbUser:     dbUser,
 	}
 }

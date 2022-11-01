@@ -1,6 +1,10 @@
 package validator
 
-import "unicode"
+import (
+	validation "github.com/go-ozzo/ozzo-validation"
+	"regexp"
+	"unicode"
+)
 
 func ValidatePassword(pass string) (lower, upper bool, len, numberCount, symbolCount int) {
 
@@ -19,4 +23,10 @@ func ValidatePassword(pass string) (lower, upper bool, len, numberCount, symbolC
 	}
 
 	return
+}
+
+func ValidatePasswordOzzo(pass string) error {
+	err := validation.Validate(pass, validation.Required, validation.Match(regexp.MustCompile(`[a-zA-Z]`)))
+
+	return err
 }

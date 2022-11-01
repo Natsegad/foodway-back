@@ -22,7 +22,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	var user domain.UserInfo
+	var user domain.UserInfoPhone
 
 	err = json.Unmarshal(data, &user)
 	if err != nil {
@@ -33,7 +33,14 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	service.Registration(user)
+	err = service.Registration(user)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
 
 	c.JSON(200, gin.H{
 		"token": 1,

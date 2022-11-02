@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+	"fmt"
 	"foodway/internal/domain"
 	"foodway/pkg/db"
 	"foodway/pkg/jwt"
@@ -26,6 +28,16 @@ func addUserToDB(user domain.UserInfoPhone) error {
 	return db.AddUser(NewUserInfo(user.Phone))
 }
 
+// checkHaveUser проверка того что указанный номер есть в базе
+func checkHaveUser(user domain.UserInfoPhone) error {
+	ok := db.GetUserByPhone(user.Phone)
+	if ok.Id != 0 {
+		return errors.New(fmt.Sprintf("%s user have", user.Phone))
+	}
+
+	return nil
+}
+
 // Главная функция регистрации
 func Registration(user domain.UserInfoPhone) error {
 	log := logger.GetLogger()
@@ -36,6 +48,11 @@ func Registration(user domain.UserInfoPhone) error {
 	err := validation(user)
 	if err != nil {
 		log.Errorf("Validation user: %s error \n", user.Phone)
+		return err
+	}
+
+	err = checkHaveUser(user)
+	if err != nil {
 		return err
 	}
 

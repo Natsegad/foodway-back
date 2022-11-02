@@ -3,7 +3,9 @@ package service
 import (
 	"foodway/internal/domain"
 	"foodway/pkg/db"
+	"foodway/pkg/jwt"
 	"foodway/pkg/logger"
+	"github.com/google/uuid"
 )
 
 // Валидация. Проверка данных соответствию стандартов
@@ -21,7 +23,7 @@ func validation(user domain.UserInfoPhone) error {
 
 // Добавление в бд
 func addUserToDB(user domain.UserInfoPhone) error {
-	return db.AddUser(db.NewUserInfo(user.Phone))
+	return db.AddUser(NewUserInfo(user.Phone))
 }
 
 // Главная функция регистрации
@@ -45,4 +47,15 @@ func Registration(user domain.UserInfoPhone) error {
 	}
 
 	return nil
+}
+
+// NewUserInfo Создает юзера по телефону
+func NewUserInfo(phone string) db.UserInfo {
+	user := db.UserInfo{}
+	user.Phone = phone
+	user.RefreshToken = ""
+	user.Id = uuid.New().ID()
+	user.Token = jwt.GenerateJwtById(user.Id)
+
+	return user
 }

@@ -3,9 +3,6 @@ package db
 import (
 	"fmt"
 	"foodway/internal/cfg"
-	"foodway/pkg/jwt"
-	"github.com/google/uuid"
-
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -15,16 +12,6 @@ type UserInfo struct {
 	Phone        string `json:"phone"`
 	Token        string `json:"jwt"`
 	RefreshToken string `json:"refresh_jwt"`
-}
-
-func NewUserInfo(phone string) UserInfo {
-	user := UserInfo{}
-	user.Phone = phone
-	user.RefreshToken = ""
-	user.Id = uuid.New().ID()
-	user.Token = jwt.GenerateJwtById(user.Id)
-
-	return user
 }
 
 var DataBase *gorm.DB

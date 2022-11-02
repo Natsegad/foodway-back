@@ -48,6 +48,12 @@ type Response struct {
 	Data    interface{} `json:"data"`
 }
 
+type JsonUserInfo struct {
+	Jwt     string `json:"jwt"`
+	Refresh string `json:"refresh"`
+	ID      uint32 `json:"id"`
+}
+
 func (ths *Response) Parse() error {
 	if ths.IsPhone {
 		phoneStruct := ths.Data.(UserInfoPhone)

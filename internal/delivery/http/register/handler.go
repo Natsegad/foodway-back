@@ -33,7 +33,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	err = service.Registration(user)
+	resp, err := service.Registration(user)
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": err.Error(),
@@ -42,7 +42,5 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"token": 1,
-	})
+	c.JSON(200, resp)
 }

@@ -62,7 +62,7 @@ func DeleteUser(id uint64) error {
 	return nil
 }
 
-func GetUser(id uint64) (UserInfo, error) {
+func GetUser(id uint32) (UserInfo, error) {
 	user := UserInfo{}
 	ok := DataBase.Find(&user, id)
 	if ok.Error != nil {

@@ -32,13 +32,13 @@ func addUserToDB(user domain.UserInfoPhone) (domain.JsonUserInfo, error) {
 }
 
 // checkHaveUser проверка того что указанный номер есть в базе
-func checkHaveUser(user domain.UserInfoPhone) error {
-	ok := db.GetUserByPhone(user.Phone)
+func checkHaveUser(phone string) (db.UserInfo, error) {
+	ok := db.GetUserByPhone(phone)
 	if ok.Id != 0 {
-		return errors.New(fmt.Sprintf("%s user have", user.Phone))
+		return ok, errors.New(fmt.Sprintf("%s user have", phone))
 	}
 
-	return nil
+	return ok, nil
 }
 
 // Главная функция регистрации
@@ -54,7 +54,7 @@ func Registration(user domain.UserInfoPhone) (*domain.JsonUserInfo, error) {
 		return nil, err
 	}
 
-	err = checkHaveUser(user)
+	_, err = checkHaveUser(user.Phone)
 	if err != nil {
 		return nil, err
 	}
@@ -104,6 +104,15 @@ func Jwt(user domain.JsonUserInfo) (*domain.JsonUserInfo, error) {
 // Главная функция авторизации
 func Authorization(user domain.JsonUserInfo) (*domain.JsonUserInfo, error) {
 	log := logger.GetLogger()
+
+	userInfo, err := db.GetUser(user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if userInfo.Id == 0 {
+		return nil, errors.New(fmt.Sprintf("User %d not found", user.ID))
+	}
 
 	nwUser, err := Jwt(user)
 	if err != nil {
